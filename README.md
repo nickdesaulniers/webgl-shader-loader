@@ -38,12 +38,8 @@ loader.loadFromXHR(vertexShaderPath, fragmentShaderPath, function (errors, progr
 * errors is an array of strings of usage, compilation, and linkage errors, it's up to you to check these.
 
 ###License
-/*
- * ----------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <nick@mozilla.com> wrote this file. As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.  Nick Desaulniers
- * ----------------------------------------------------------------------------
- */
+"THE BEER-WARE LICENSE" (Revision 42):
+<nick@mozilla.com> wrote this file. As long as you retain this notice you
+can do whatever you want with this stuff. If we meet some day, and you think
+this stuff is worth it, you can buy me a beer in return.  Nick Desaulniers
 
