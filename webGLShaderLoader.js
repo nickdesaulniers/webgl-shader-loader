@@ -35,6 +35,7 @@ var WebGLShaderLoader = (function () {
 
       if (vertexShaderPath.length === 0 || fragmentShaderPath.length === 0) {
         console.error("empty shader path");
+        return;
       }
 
       var numShadersLoaded = 0;
