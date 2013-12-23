@@ -21,7 +21,7 @@ loader.loadFromStr(vertexShaderStr, fragmentShaderStr, function (errors, program
 ```
 
 ##Load WebGL Program From XHR'd Files
-```
+```javascript
 var loader = new WebGLShaderLoader(gl);
 loader.loadFromXHR(vertexShaderPath, fragmentShaderPath, function (errors, program) {
   if (errors.length > 0) {
