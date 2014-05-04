@@ -3,9 +3,14 @@ var WebGLShaderLoader = (function () {
   var fragmentShaderType = WebGLRenderingContext.prototype.FRAGMENT_SHADER;
 
   function WebGLShaderLoader (gl) {
-    this.gl = gl;
-    this.vertexShader = this.fragmentShader = null;
     this.errors = [];
+    if (gl instanceof HTMLCanvasElement) {
+      this.gl = gl.getContext('webgl') || gl.getContext('experimental-webgl');
+      if (!this.gl) this.errors.push("webgl unsupported");
+    } else {
+      this.gl = gl;
+    }
+    this.vertexShader = this.fragmentShader = null;
   };
 
   WebGLShaderLoader.prototype = {
