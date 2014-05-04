@@ -19,16 +19,16 @@ var WebGLShaderLoader = (function () {
           typeof fragmentShaderStr !== "string" ||
           typeof cb !== "function") {
         this.errors.push("Usage: loaderInstance.loadFromStr('', '', function (errors, program));");
-        cb(this.errors, null);
+        cb(this.errors, null, this.gl);
       } else if (vertexShaderStr.length === 0 ||
                  fragmentShaderStr.length === 0) {
         this.errors.push("empty shader string");
-        cb(this.errors, null);
+        cb(this.errors, null, this.gl);
       } else {
         this.vertexShader = this.compile(vertexShaderType, vertexShaderStr);
         this.fragmentShader = this.compile(fragmentShaderType, fragmentShaderStr);
 
-        cb(this.errors, this.link());
+        cb(this.errors, this.link(), this.gl);
       }
     },
     loadFromXHR: function (vertexShaderPath, fragmentShaderPath, cb) {
@@ -36,33 +36,32 @@ var WebGLShaderLoader = (function () {
           typeof fragmentShaderPath !== "string" ||
           typeof cb !== "function") {
         this.errors.push("Usage: loaderInstance.loadFromXHR('', '', function (errors, program));");
-        cb(this.errors, null);
+        cb(this.errors, null, this.gl);
         return;
       }
 
       if (vertexShaderPath.length === 0 || fragmentShaderPath.length === 0) {
         this.errors.push("empty shader path");
-        cb(this.errors, null);
+        cb(this.errors, null, this.gl);
         return;
       }
 
       var numShadersLoaded = 0;
-      var self = this;
       var onload = function (shader, shaderType) {
         return function (twoHundredResponse, shaderStr) {
           if (!twoHundredResponse) {
-            self.errors.push("xhr non 200 response code");
-            cb(self.errors, null);
+            this.errors.push("xhr non 200 response code");
+            cb(this.errors, null, this.gl);
             return;
           }
 
-          self[shader] = self.compile(shaderType, shaderStr);
+          this[shader] = this.compile(shaderType, shaderStr);
 
           if (++numShadersLoaded > 1) {
-            cb(self.errors, self.link());
+            cb(this.errors, this.link(), this.gl);
           }
-        };
-      };
+        }.bind(this);
+      }.bind(this);
       this.fetch(vertexShaderPath, onload("vertexShader", vertexShaderType));
       this.fetch(fragmentShaderPath, onload("fragmentShader", fragmentShaderType));
     },
