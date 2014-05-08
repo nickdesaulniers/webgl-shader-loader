@@ -17,11 +17,11 @@
   // num is number of components per attribute.  ex. vec3 -> 3, mat4 -> 4
   function initBuffer (gl, data, num, attribute) {
     var buffer = gl.createBuffer();
-    if (!buffer) return !!console.error("Failed to create " + attribute + " buffer.");
+    if (!buffer) throw new Error("Failed to create buffer.");
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     gl.vertexAttribPointer(attribute, num, gl.FLOAT, false, 0, 0);
-    return !gl.enableVertexAttribArray(attribute);
+    gl.enableVertexAttribArray(attribute);
   };
 
   var webGLProto = WebGLRenderingContext.prototype;
