@@ -22,6 +22,7 @@
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     gl.vertexAttribPointer(attribute, num, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(attribute);
+    return buffer;
   };
 
   var webGLProto = WebGLRenderingContext.prototype;
