@@ -16,6 +16,7 @@
 
   // num is number of components per attribute.  ex. vec3 -> 3, mat4 -> 4
   function initBuffer (gl, data, num, attribute) {
+    if (typeof attribute === "undefined") throw new Error("invalid attribute");
     var buffer = gl.createBuffer();
     if (!buffer) throw new Error("Failed to create buffer.");
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
