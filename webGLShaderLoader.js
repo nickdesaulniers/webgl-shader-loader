@@ -120,6 +120,25 @@ var WebGLShaderLoader = (function () {
     }
   };
 
+  function getQualifiersPartial(parameter, storage) {
+    var getActive = "getActive" + storage;
+    var getLocation = "get" + storage + "Location";
+    return function (gl, program) {
+      var len = gl.getProgramParameter(program, parameter);
+      var qualifiers = {};
+      var qualifier = null;
+      for (var i = 0; i < len; ++i) {
+        qualifier = gl[getActive](program, i).name;
+        qualifiers[qualifier] = gl[getLocation](program, qualifier);
+      }
+      return qualifiers;
+    };
+  };
+
+  var webGLProto = WebGLRenderingContext.prototype;
+  var getAttributes = getQualifiersPartial(webGLProto.ACTIVE_ATTRIBUTES, "Attrib");
+  var getUniforms = getQualifiersPartial(webGLProto.ACTIVE_UNIFORMS, "Uniform");
+
   // call with:
   // load(gl, ['a.vert', 'b.frag', 'c.vert', 'd.frag'], ['a.jpg', 'b.jpg'],
   //      function (errors, gl, programs, imgs) { ... });
@@ -150,7 +169,11 @@ var WebGLShaderLoader = (function () {
       var loader = new WebGLShaderLoader(gl);
       loader.loadFromXHR(shaderUrls[i], shaderUrls[i + 1], function (e, program, _) {
         if (e.length) errors.concat(e);
-        programs[i / 2] = program;
+        programs[i / 2] = {
+          attributes: getAttributes(gl, program),
+          program: program,
+          uniforms: getUniforms(gl, program),
+        };
         if (++programsDone === totalShaders / 2) {
           shadersComplete = true;
           if (imgsComplete) cb(errors, gl, programs, images);

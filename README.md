@@ -21,7 +21,8 @@ WebGLShaderLoader.load($gl, shaderUrls, imgUrls, function (errors, gl, programs,
   if (errors.length) return console.error.apply(console, errors);
 
   console.log(programs, images);
-  gl.useProgram(programs[0]);
+  gl.useProgram(programs[0].program);
+  gl.uniform1f(programs[0].uniforms.uTime, 42.0)
 });
 ```
 `$gl` can be an existing webGL context or a canvas element (in the DOM or not).
@@ -35,7 +36,10 @@ alternating vertexShaderURL, fragmentShaderURL.
 
 `gl` is a webGL context, regardless of `$gl`.
 
-`programs` is an array of WebGLPrograms, in order of the pairs, ready for use.
+`programs` is an array of objects, in order of the pairs. The objects contain
+the keys `attributes`, `program`, and `uniforms`.  `program` is the
+WebGLProgram, ready for use.  The `attributes` and `uniforms` keys point to
+objects whose keys are the identifiers and values are the locations.
 
 `images` is a possibly empty array of img elements ready to be sampled.
 
