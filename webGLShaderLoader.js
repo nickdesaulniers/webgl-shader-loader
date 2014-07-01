@@ -124,9 +124,10 @@ var WebGLShaderLoader = (function () {
   // load(gl, ['a.vert', 'b.frag', 'c.vert', 'd.frag'], ['a.jpg', 'b.jpg'],
   //      function (errors, gl, programs, imgs) { ... });
   WebGLShaderLoader.load = function (_gl, shaderUrls, imgUrls, cb) {
+    imgUrls = imgUrls || [];
     var programsDone = 0;
     var shadersComplete = false;
-    var imgsComplete = false;
+    var imgsComplete = !imgUrls.length;
     var totalShaders = shaderUrls.length;
     var errors = [];
     var programs = [];
@@ -134,6 +135,15 @@ var WebGLShaderLoader = (function () {
 
     var gl = getContext(_gl);
     if (!gl) errors.push("webgl unsupported");
+
+    if (!imgsComplete) {
+      loadImages(imgUrls, function (e, imgs) {
+        if (e.length) errors.concat(e);
+        images = imgs;
+        imgsComplete = true;
+        if (shadersComplete) cb(errors, gl, programs, images);
+      });
+    }
 
     shaderUrls.forEach(function (shaderUrl, i) {
       if (i % 2 === 1) return;
@@ -146,14 +156,6 @@ var WebGLShaderLoader = (function () {
           if (imgsComplete) cb(errors, gl, programs, images);
         }
       });
-    });
-
-    if (!imgUrls || !imgUrls.length) imgsComplete = true;
-    loadImages(imgUrls || [], function (e, imgs) {
-      if (e.length) errors.concat(e);
-      images = imgs;
-      imgsComplete = true;
-      if (shadersComplete) cb(errors, gl, programs, images);
     });
   };
 
