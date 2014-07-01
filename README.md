@@ -7,6 +7,33 @@ Asynchronous load, compile, and link webgl shader programs
 <script src="webGLShaderLoader.js"></script>
 ```
 
+##Load WebGL Programs From Shader URL Pairs And Images From URLs
+```javascript
+var shaderUrls = ['vertex1.glsl', 'frag1.glsl', 'vertex2.glsl', 'frag2.glsl'];
+var imgUrls = ['texture1.jpg', 'texture2.jpg', 'texture3.jpg'];
+
+WebGLShaderLoader.load($gl, shaderUrls, imgUrls, function (errors, gl, programs, images) {
+  if (errors.length) return console.error.apply(console, errors);
+
+  console.log(programs, images);
+  gl.useProgram(programs[0]);
+});
+```
+`$gl` can be an existing webGL context or a canvas element (in the DOM or not).
+
+`shaderUrls` is an array of strings of URLs to shaders. Expects pairs of atleast one,
+alternating vertexShaderURL, fragmentShaderURL.
+
+`imgUrls` is an array of strings of URLs to `<img>`s. May be empty or null.
+
+`errors` is a possibly empty array of strings.
+
+`gl` is a webGL context, regardless of `$gl`.
+
+`programs` is an array of WebGLPrograms, in order of the pairs, ready for use.
+
+`images` is a possibly empty array of img elements ready to be sampled.
+
 ##Load WebGL Program From Shader String Literals
 ```javascript
 var loader = new WebGLShaderLoader(gl);
