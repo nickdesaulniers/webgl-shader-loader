@@ -7,6 +7,8 @@ Asynchronous load, compile, and link webgl shader programs
 <script src="webGLShaderLoader.js"></script>
 ```
 
+![timing](https://raw.githubusercontent.com/nickdesaulniers/webgl-shader-loader/master/timing.png)
+
 Shaders can be fetched and compiled independently.  Images used for textures
 can also be fetched asynchronously.  This library helps you load, compile,
 and link shaders and images without waiting for each other, other than a
