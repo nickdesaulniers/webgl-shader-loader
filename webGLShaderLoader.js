@@ -149,9 +149,9 @@ var WebGLShaderLoader = (function () {
     });
 
     if (!imgUrls || !imgUrls.length) imgsComplete = true;
-    loadImages(imgUrls, function (e, imgs) {
+    loadImages(imgUrls || [], function (e, imgs) {
       if (e.length) errors.concat(e);
-      images.concat(imgs);
+      images = imgs;
       imgsComplete = true;
       if (shadersComplete) cb(errors, gl, programs, images);
     });
