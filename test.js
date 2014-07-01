@@ -29,3 +29,7 @@ loader.loadFromXHR(vertexShaderPath, fragmentShaderPath, function (errors, progr
   console.log(program);
 });
 
+var shaderUrls = ['vertex2.glsl', 'fragment2.glsl', 'vertex.glsl', 'fragment.glsl'];
+var imgUrls = ['Star.png', 'sicp.jpg', 'dinosaur.jpg'];
+l(gl, shaderUrls, imgUrls, function (e, gl, p, i) { console.log(arguments); });
+
