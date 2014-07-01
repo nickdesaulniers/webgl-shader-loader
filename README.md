@@ -7,6 +7,11 @@ Asynchronous load, compile, and link webgl shader programs
 <script src="webGLShaderLoader.js"></script>
 ```
 
+Shaders can be fetched and compiled independently.  Images used for textures
+can also be fetched asynchronously.  This library helps you load, compile,
+and link shaders and images without waiting for each other, other than a
+vertex or fragment shader waiting to link with its compiled other half.
+
 ##Load WebGL Programs From Shader URL Pairs And Images From URLs
 ```javascript
 var shaderUrls = ['vertex1.glsl', 'frag1.glsl', 'vertex2.glsl', 'frag2.glsl'];
