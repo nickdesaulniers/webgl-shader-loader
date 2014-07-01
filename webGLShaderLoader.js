@@ -4,13 +4,9 @@ var WebGLShaderLoader = (function () {
 
   function WebGLShaderLoader (gl) {
     this.errors = [];
-    if (gl instanceof HTMLCanvasElement) {
-      this.gl = gl.getContext('webgl') || gl.getContext('experimental-webgl');
-      if (!this.gl) this.errors.push("webgl unsupported");
-    } else {
-      this.gl = gl;
-    }
     this.vertexShader = this.fragmentShader = null;
+    this.gl = getContext(gl);
+    if (!this.gl) this.errors.push("webgl unsupported");
   };
 
   WebGLShaderLoader.prototype = {
@@ -96,6 +92,69 @@ var WebGLShaderLoader = (function () {
       };
       xhr.send();
     },
+  };
+
+  function getContext (glOrCanvas) {
+    if (glOrCanvas instanceof HTMLCanvasElement) {
+      return gl.getContext('webgl') || gl.getContext('experimental-webgl');
+    } else {
+      return glOrCanvas;
+    }
+  };
+
+  function loadImages (imgSrcs, cb) {
+    var len = imgSrcs.length;
+    var images = [];
+    var errors = [];
+    var loaded = 0;
+    function onLoad () { if (++loaded === len) cb(errors, images); };
+    function onError (e) {
+      errors.push("Failed to load " + e.target.src);
+      onLoad();
+    };
+    for (var i = 0; i < len; ++i) {
+      images[i] = new Image;
+      images[i].onload = onLoad;
+      images[i].onerror = onError;
+      images[i].src = imgSrcs[i];
+    }
+  };
+
+  // call with:
+  // load(gl, ['a.vert', 'b.frag', 'c.vert', 'd.frag'], ['a.jpg', 'b.jpg'],
+  //      function (errors, gl, programs, imgs) { ... });
+  WebGLShaderLoader.load = function (_gl, shaderUrls, imgUrls, cb) {
+    var programsDone = 0;
+    var shadersComplete = false;
+    var imgsComplete = false;
+    var totalShaders = shaderUrls.length;
+    var errors = [];
+    var programs = [];
+    var images = [];
+
+    var gl = getContext(_gl);
+    if (!gl) errors.push("webgl unsupported");
+
+    shaderUrls.forEach(function (shaderUrl, i) {
+      if (i % 2 === 1) return;
+      var loader = new WebGLShaderLoader(gl);
+      loader.loadFromXHR(shaderUrls[i], shaderUrls[i + 1], function (e, program, _) {
+        if (e.length) errors.concat(e);
+        programs[i / 2] = program;
+        if (++programsDone === totalShaders / 2) {
+          shadersComplete = true;
+          if (imgsComplete) cb(errors, gl, programs, images);
+        }
+      });
+    });
+
+    if (!imgUrls || !imgUrls.length) imgsComplete = true;
+    loadImages(imgUrls, function (e, imgs) {
+      if (e.length) errors.concat(e);
+      images.concat(imgs);
+      imgsComplete = true;
+      if (shadersComplete) cb(errors, gl, programs, images);
+    });
   };
 
   return WebGLShaderLoader;
