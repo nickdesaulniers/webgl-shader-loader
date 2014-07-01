@@ -1,12 +1,17 @@
 function loadImages (imgSrcs, cb) {
   var len = imgSrcs.length;
   var images = [];
+  var errors = [];
   var loaded = 0;
-  // bad: no error handling
-  function amDone () { if (++loaded === len) cb([], images); };
+  function amDone () { if (++loaded === len) cb(errors, images); };
+  function onError (e) {
+    errors.push('Failed to load ' + e.target.src);
+    amDone();
+  };
   for (var i = 0; i < len; ++i) {
     images[i] = new Image;
     images[i].onload = amDone;
+    images[i].onerror = onError;
     images[i].src = imgSrcs[i];
   }
 };
