@@ -96,7 +96,7 @@ var WebGLShaderLoader = (function () {
 
   function getContext (glOrCanvas) {
     if (glOrCanvas instanceof HTMLCanvasElement) {
-      return gl.getContext('webgl') || gl.getContext('experimental-webgl');
+      return glOrCanvas.getContext('webgl') || glOrCanvas.getContext('experimental-webgl');
     } else {
       return glOrCanvas;
     }
