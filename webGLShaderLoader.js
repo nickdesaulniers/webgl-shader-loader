@@ -139,6 +139,9 @@ var WebGLShaderLoader = (function () {
   var getAttributes = getQualifiersPartial(webGLProto.ACTIVE_ATTRIBUTES, "Attrib");
   var getUniforms = getQualifiersPartial(webGLProto.ACTIVE_UNIFORMS, "Uniform");
 
+  WebGLShaderLoader.prototype.getAttributes = getAttributes;
+  WebGLShaderLoader.prototype.getUniforms = getUniforms;
+
   // call with:
   // load(gl, ['a.vert', 'b.frag', 'c.vert', 'd.frag'], ['a.jpg', 'b.jpg'],
   //      function (errors, gl, programs, imgs) { ... });
